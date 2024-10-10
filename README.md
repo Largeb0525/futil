@@ -59,7 +59,7 @@ The application is designed using the `cobra` package to provide an extensible c
 - **Binary File Detection**
   - For both commands, binary file detection is implemented. If the file is binary, the tool will return an error message:
     ```
-    error: Cannot perform line count or checksum calculation for binary file '<filename>'
+    error: Cannot do linecount or checksum for binary file '<filename>'
     ```
 
 ## Third-Party Libraries
@@ -69,3 +69,5 @@ The application is designed using the `cobra` package to provide an extensible c
 ## Known Issues
 
 - **Large File Handling**: Processing very large files (several GBs or more) may result in high memory usage and slow performance. This can be mitigated by optimizing IO operations, but it's recommended to use the tool for small to medium-sized files. Future versions may include better handling for large files.
+
+- **Binary File Detection**: The detection of binary files is done using a simple heuristic (checking for non-printable characters). This method might not be completely accurate for all file types, especially for files containing mixed binary and text content.
