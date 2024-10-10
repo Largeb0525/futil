@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/Largeb0525/futil/internal"
 
@@ -19,16 +18,16 @@ var lineCountCmd = &cobra.Command{
 		if file == "-" {
 			fmt.Println(internal.CountLinesFromStdin())
 		} else {
-			_, err := os.Stat(file)
-			if os.IsNotExist(err) {
-				fmt.Printf("error: No such file '%s'\n", file)
-				return
-			}
-			count, err := internal.CountLinesInFile(file)
+			err := internal.CheckFileValid(file)
 			if err != nil {
 				fmt.Println("Error:", err)
 			} else {
-				fmt.Println(count)
+				count, err := internal.CountLinesInFile(file)
+				if err != nil {
+					fmt.Println("Error:", err)
+				} else {
+					fmt.Println(count)
+				}
 			}
 		}
 	},

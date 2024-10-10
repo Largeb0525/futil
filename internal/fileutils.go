@@ -9,6 +9,7 @@ import (
 	"hash"
 	"io"
 	"os"
+	"unicode"
 )
 
 func CountLinesInFile(filename string) (int, error) {
@@ -81,4 +82,39 @@ func ChecksumFromStdin(algorithm string) string {
 	}
 
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func CheckFileValid(file string) error {
+	info, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("No such file '%s'\n", file)
+	}
+
+	if info.IsDir() {
+		return fmt.Errorf("Expected file got directory '%s'\n", file)
+	}
+
+	if isBinaryFile(file) {
+		return fmt.Errorf("Cannot do linecount for binary file '%s'\n", file)
+	}
+	return nil
+}
+
+func isBinaryFile(filePath string) bool {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+	buffer := make([]byte, 8000)
+	n, _ := reader.Read(buffer)
+
+	for i := 0; i < n; i++ {
+		if !unicode.IsPrint(rune(buffer[i])) && buffer[i] != '\n' && buffer[i] != '\r' && buffer[i] != '\t' {
+			return true
+		}
+	}
+	return false
 }
