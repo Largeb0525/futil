@@ -1,4 +1,4 @@
-name: Go CI and Auto Release
+name: Go CI and Auto Tag and Release
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -32,36 +32,37 @@ jobs:
       - name: Run tests
         run: go test -v ./...
 
+      - name: Bump version tag
+        id: bump_version
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+
+          version=${latest_tag#v}
+          IFS='.' read -r major minor patch <<< "$version"
+
+          patch=$((patch+1))
+
+          new_tag="v$major.$minor.$patch"
+          echo "New tag: $new_tag"
+
+          echo "tag=$new_tag" >> $GITHUB_ENV
+
+          git tag $new_tag
+          git push origin $new_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build
-        run: go build -ldflags "-X 'github.com/Largeb0525/futil/cmd.version=$(git describe --tags)'" -o futil
+        run: |
+          VERSION=${{ env.tag }}
+          echo "Building with version $VERSION"
+          go build -ldflags "-X 'github.com/Largeb0525/futil/cmd.version=$VERSION'" -o futil
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3
         with:
           name: futil-binary
           path: futil
-
-      - name: Bump version tag
-        id: bump_version
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-          
-          version=${latest_tag#v}
-          
-          IFS='.' read -r major minor patch <<< "$version"
-
-          patch=$((patch+1))
-
-          new_tag="v$major.$minor.$patch"
-
-          echo "New tag: $new_tag"
-
-          echo "tag=$new_tag" >> $GITHUB_ENV
-          
-          git tag $new_tag
-          git push origin $new_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto Create GitHub Release
         uses: softprops/action-gh-release@v1
