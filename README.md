@@ -7,13 +7,13 @@
 ### Prerequisites
 
 - **Go**: Ensure that Go (1.19 or later) is installed on your machine. You can download it from [here](https://golang.org/dl/).
+- **Make**: Ensure that `make` is installed. On Linux and macOS, it is usually pre-installed. For Windows users, you can install `make` via [GNUWin](http://gnuwin32.sourceforge.net/packages/make.htm) or by using a Windows Subsystem for Linux (WSL).
 
 ### Build the Application
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/Largeb0525/futil.git
-   cd futil
    ```
 
 2. Build the application using make:
