@@ -95,7 +95,7 @@ func CheckFileValid(file string) error {
 	}
 
 	if isBinaryFile(file) {
-		return fmt.Errorf("Cannot do linecount for binary file '%s'\n", file)
+		return fmt.Errorf("Cannot do linecount or checksum for binary file '%s'\n", file)
 	}
 	return nil
 }
