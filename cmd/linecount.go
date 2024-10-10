@@ -12,7 +12,7 @@ import (
 var file string
 
 var lineCountCmd = &cobra.Command{
-	Use:   "linecount [flags]",
+	Use:   "linecount",
 	Short: "Print line count of file",
 	Long:  `Calculate the number of lines in a file`,
 	Run: func(cmd *cobra.Command, args []string) {
