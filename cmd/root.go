@@ -25,6 +25,7 @@ func completionCommand() *cobra.Command {
 }
 
 func Execute() {
+	initVersionCmd()
 	initChecksumCmd()
 	initLineCountCmd()
 	rootCmd.Root().CompletionOptions.DisableDefaultCmd = true

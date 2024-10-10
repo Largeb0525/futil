@@ -33,7 +33,7 @@ jobs:
         run: go test -v ./...
 
       - name: Build
-        run: go build -o futil .
+        run: go build -ldflags "-X 'github.com/Largeb0525/futil/cmd.version=$(git describe --tags)'" -o futil
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3
