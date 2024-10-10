@@ -1,0 +1,60 @@
+name: Go CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Test, Build and Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.19'
+
+      - name: Get dependencies
+        run: go mod tidy
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Build
+        run: go build -o futil .
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: futil-binary
+          path: futil
+
+  release:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.19'
+
+      - name: Build
+        run: go build -o futil .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: futil
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
