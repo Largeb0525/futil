@@ -7,21 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var name string
-
 var rootCmd = &cobra.Command{
 	Use:                   "futil",
 	Short:                 "File Utility",
 	Long:                  "futil is a command-line tool for file operations, offering functionality for line counting and file checksum calculation.",
 	DisableAutoGenTag:     true,
 	DisableFlagsInUseLine: true,
-}
-
-func completionCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:   "completion",
-		Short: "Generate the autocompletion script for the specified shell",
-	}
 }
 
 func Execute() {
